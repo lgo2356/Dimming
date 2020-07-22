@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:ignore="HardCodedText">
 
     <TextView
@@ -18,15 +19,27 @@
         android:id="@+id/recycler_pairing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_pairing" />
+        app:layout_constraintTop_toBottomOf="@id/text_pairing"
+        tools:layout_editor_absoluteX="54dp" />
 
     <TextView
         android:id="@+id/text_discovered"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="검색된 장치"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recycler_pairing" />
+
+    <ProgressBar
+        android:id="@+id/progressbar_discovering"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/text_discovered"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_discovered" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_discovered"
