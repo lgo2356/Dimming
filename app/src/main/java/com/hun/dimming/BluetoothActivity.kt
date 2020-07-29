@@ -3,14 +3,15 @@ package com.hun.dimming
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.bluetooth.*
+import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hun.dimming.adapter.RecyclerAdapterBTDevice
 import com.hun.dimming.data.BTDevice
 import kotlinx.android.synthetic.main.activity_blutooth.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BluetoothActivity : AppCompatActivity() {
 
@@ -28,7 +31,40 @@ class BluetoothActivity : AppCompatActivity() {
     private val btDiscoveredDevices: ArrayList<BTDevice> = ArrayList()
     private val btPairedAdapter: RecyclerAdapterBTDevice = RecyclerAdapterBTDevice(btPairedDevices)
     private val btDiscoveredAdapter: RecyclerAdapterBTDevice = RecyclerAdapterBTDevice(btDiscoveredDevices)
-    private var bluetoothAdapter: BluetoothAdapter? = null
+
+    private var mBluetoothAdapter: BluetoothAdapter? = null
+    private val BluetoothAdapter.isDisabled: Boolean get() = !isEnabled
+    private var mBluetoothLeService: BluetoothLeService? = null
+    private var bluetoothLeScanner: BluetoothLeScanner? = null
+
+    private val handler: Handler = Handler()
+
+    private var mScanning: Boolean = false
+    private var mConnected: Boolean = false
+    private var mBluetoothGatt: BluetoothGatt? = null
+    private var mDeviceName: String? = null
+    private var mDeviceAddress: String? = null
+
+    private val mServiceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
+            mBluetoothLeService = (service as BluetoothLeService.LocalBinder).service
+
+            if (mBluetoothLeService == null) {
+                finish()
+            }
+
+            if (!mBluetoothLeService!!.initialize()) {
+                Log.d("Debug", "Unable to initialize Bluetooth.")
+                finish()
+            }
+
+//            mBluetoothLeService!!.connect(mDeviceAddress)
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName?) {
+            mBluetoothLeService = null
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +72,16 @@ class BluetoothActivity : AppCompatActivity() {
 
         checkPermissions(this)
         activateBluetooth()
-        registerBluetoothReceive()
-        startDeviceScan()
+//        registerBluetoothReceive()
+//        startDeviceScan()
+
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        mBluetoothAdapter = bluetoothManager.adapter
+        bluetoothLeScanner = mBluetoothAdapter?.bluetoothLeScanner
+
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "BLE를 지원하지 않는 디바이스 입니다.", Toast.LENGTH_SHORT).show()
+        }
 
         recycler_pairing.adapter = btPairedAdapter
         recycler_pairing.layoutManager = LinearLayoutManager(this)
@@ -50,20 +94,34 @@ class BluetoothActivity : AppCompatActivity() {
         btPairedAdapter.setOnItemClickListener(
             object : RecyclerAdapterBTDevice.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
-                    val devices = btPairedAdapter.getItems()
-                    val deviceAddress = devices[position].address
+                    scanLeDevice(false)
 
-                    bluetoothAdapter?.cancelDiscovery()
-                    val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
+                    val devices = btPairedAdapter.getItems()
+                    val address = devices[position].address
+//                    val device = mBluetoothAdapter?.getRemoteDevice(address)
+                    mBluetoothLeService?.connect(address)
+
+//                    mBluetoothGatt = device?.connectGatt(applicationContext, false, gattCallback)
                 }
             })
 
         btDiscoveredAdapter.setOnItemClickListener(
             object : RecyclerAdapterBTDevice.OnItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
+                    scanLeDevice(false)
 
+                    val devices = btDiscoveredAdapter.getItems()
+                    val address = devices[position].address
+//                    val device = mBluetoothAdapter?.getRemoteDevice(address)
+                    mBluetoothLeService?.connect(address)
+
+//                    mBluetoothGatt = device?.connectGatt(applicationContext, false, gattCallback)
                 }
             })
+
+        // Service binding
+        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+        bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun setProgress(isProgress: Boolean) {
@@ -74,45 +132,97 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                BluetoothDevice.ACTION_FOUND -> {
-                    val newDevice: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+//    private val gattCallback = object : BluetoothGattCallback() {
+//        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+//            val intentAction: String
+//
+//            when (newState) {
+//                BluetoothProfile.STATE_CONNECTED -> {
+//                    BTGatt.gatt = gatt
+//
+//                    intentAction = ACTION_GATT_CONNECTED
+//                    broadcastUpdate(intentAction)
+//                }
+//
+//                BluetoothProfile.STATE_DISCONNECTED -> {
+//                    intentAction = ACTION_GATT_DISCONNECTED
+//                    broadcastUpdate(intentAction)
+//                }
+//            }
+//        }
+//    }
 
-                    newDevice?.let {
-                        val name: String? = it.name
-                        val address: String = it.address
+    private val mGattUpdateCReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
 
-                        if (!isDuplicatedDevice(address) && !isPairedDevice(address) && name != null) {
-                            btDiscoveredAdapter.addItem(name, address)
-                        }
-                    }
+            when (intent?.action) {
+                BluetoothLeService.ACTION_GATT_CONNECTED -> {
+                    mConnected = true
                 }
 
-                BluetoothAdapter.ACTION_STATE_CHANGED -> {
-                    Log.d("Debug", "ACTION STATE CHANGED")
+                BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
+                    mConnected = false
                 }
 
-                BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
-                    Log.d("Debug", "ACTION DISCOVERY STARTED")
-                    setProgress(true)
+                BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED -> {
+
                 }
 
-                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    Log.d("Debug", "ACTION DISCOVERY FINISHED")
-                    setProgress(false)
-                }
+                BluetoothLeService.ACTION_DATA_AVAILABLE -> {
 
-                null -> {
                 }
             }
         }
     }
 
+    private fun makeGattUpdateIntentFilter(): IntentFilter {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED)
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE)
+        return intentFilter
+    }
+
+//    private val receiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context, intent: Intent) {
+//            when (intent.action) {
+//                BluetoothDevice.ACTION_FOUND -> {
+//                    val newDevice: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+//
+//                    newDevice?.let {
+//                        val name: String? = it.name
+//                        val address: String = it.address
+//
+//                        if (!isDuplicatedDevice(address) && !isPairedDevice(address) && name != null) {
+//                            btDiscoveredAdapter.addItem(name, address)
+//                        }
+//                    }
+//                }
+//
+//                BluetoothAdapter.ACTION_STATE_CHANGED -> {
+//                    Log.d("Debug", "ACTION STATE CHANGED")
+//                }
+//
+//                BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
+//                    Log.d("Debug", "ACTION DISCOVERY STARTED")
+//                    setProgress(true)
+//                }
+//
+//                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+//                    Log.d("Debug", "ACTION DISCOVERY FINISHED")
+//                    setProgress(false)
+//                }
+//
+//                null -> {
+//                }
+//            }
+//        }
+//    }
+
     private fun isPairedDevice(address: String): Boolean {
         var isPaired = false
-        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+        val pairedDevices: Set<BluetoothDevice>? = mBluetoothAdapter?.bondedDevices
 
         if (pairedDevices != null && pairedDevices.isNotEmpty()) {
             for (device in pairedDevices) {
@@ -142,35 +252,103 @@ class BluetoothActivity : AppCompatActivity() {
         return isDuplicated
     }
 
-    private fun registerBluetoothReceive() {
-        val filter = IntentFilter().apply {
-            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
-            addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-            addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-            addAction(BluetoothDevice.ACTION_FOUND)
-        }
-
-        registerReceiver(receiver, filter)
-    }
+//    private fun registerBluetoothReceive() {
+//        val filter = IntentFilter().apply {
+//            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
+//            addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+//            addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+//            addAction(BluetoothDevice.ACTION_FOUND)
+//        }
+//
+//        registerReceiver(receiver, filter)
+//    }
 
     private fun activateBluetooth() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        mBluetoothAdapter?.takeIf { it.isDisabled }?.apply {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, Constant.REQUEST_ENABLE_BLUETOOTH)
+        }
+//        if (bluetoothAdapter == null) {
+//            Toast.makeText(applicationContext, "블루투스 기능을 지원하지 않는 디바이스입니다.", Toast.LENGTH_SHORT).show()
+//        } else {
+//            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//            startActivityForResult(enableBluetoothIntent, Constant.REQUEST_ENABLE_BLUETOOTH)
+//        }
+    }
 
-        if (bluetoothAdapter == null) {
-            Toast.makeText(applicationContext, "블루투스 기능을 지원하지 않는 디바이스입니다.", Toast.LENGTH_SHORT).show()
+    private fun scanLeDevice(enable: Boolean) {
+        if (enable) {
+            handler.postDelayed({
+                mScanning = false
+                bluetoothLeScanner?.stopScan(leScanCallback)
+            }, 20000)
+            mScanning = true
+            bluetoothLeScanner?.startScan(leScanCallback)
         } else {
-            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBluetoothIntent, Constant.REQUEST_ENABLE_BLUETOOTH)
+            mScanning = false
+            bluetoothLeScanner?.stopScan(leScanCallback)
         }
     }
 
-    private fun startDeviceScan() {
-        bluetoothAdapter?.cancelDiscovery()
-        bluetoothAdapter?.startDiscovery()
+    private val leScanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult?) {
+            super.onScanResult(callbackType, result)
+            processResult(result)
+        }
+
+//        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
+//            super.onBatchScanResults(results)
+//            if (results != null) {
+//                for (result in results) {
+//                    processResult(result)
+//                }
+//            }
+//        }
+//
+//        override fun onScanFailed(errorCode: Int) {
+//            super.onScanFailed(errorCode)
+//        }
+
+        private fun processResult(result: ScanResult?) {
+            val name: String? = result?.device?.name
+            val address: String = result?.device?.address!!
+
+            Log.d("Debug", "Name: ${name.toString()} Address: $address")
+
+            if (result.device?.name != null) {
+                if (!isDuplicatedDevice(address) && !isPairedDevice(address) && name != null) {
+                    btDiscoveredAdapter.addItem(name, address)
+                }
+            }
+        }
     }
 
+//    private val leScanCallback = BluetoothAdapter.LeScanCallback { bluetoothDevice, i, bytes ->
+////        val name: String? = bluetoothDevice.name
+////        val address: String = bluetoothDevice.address
+//
+//        if (bluetoothDevice.name != null) {
+//            Log.d("Debug", bluetoothDevice.name)
+//        }
+//
+////        if (!isDuplicatedDevice(address) && !isPairedDevice(address) && name != null) {
+////            btDiscoveredAdapter.addItem(name, address)
+////        }
+//
+////        val newDevice: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+////
+////        newDevice?.let {
+////            val name: String? = it.name
+////            val address: String = it.address
+////
+////            if (!isDuplicatedDevice(address) && !isPairedDevice(address) && name != null) {
+////                btDiscoveredAdapter.addItem(name, address)
+////            }
+////        }
+//    }
+
     private fun setPairedDeviceList() {
-        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+        val pairedDevices: Set<BluetoothDevice>? = mBluetoothAdapter?.bondedDevices
 
         if (pairedDevices != null) {
             for (device in pairedDevices) {
@@ -180,10 +358,15 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions(activity: Activity) {
-        val requiredPermissions: Array<String> = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val requiredPermissions: Array<String> = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
         val accessFineLocationPermission = ContextCompat.checkSelfPermission(activity, requiredPermissions[0])
+        val accessCoarseLocationPermission = ContextCompat.checkSelfPermission(activity, requiredPermissions[1])
 
-        if (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
+        if (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+            accessCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
             return
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, requiredPermissions[0])) {
@@ -208,8 +391,22 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mGattUpdateCReceiver, makeGattUpdateIntentFilter())
+        scanLeDevice(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(mGattUpdateCReceiver)
+    }
+
     override fun onStop() {
         super.onStop()
-        bluetoothAdapter?.cancelDiscovery()
+
+        scanLeDevice(false)
+        unbindService(mServiceConnection)
+        mBluetoothLeService = null
     }
 }

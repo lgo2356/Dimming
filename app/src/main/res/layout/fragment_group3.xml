@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMainBackground"
+    tools:context=".view_page.FragmentGroup1"
+    tools:ignore="HardCodedText">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_info"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/background_info_container"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:text="Color:"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/text_dimming"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/text_color_value"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/text_color_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/text_color"
+                app:layout_constraintLeft_toRightOf="@id/text_color"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_color" />
+
+            <TextView
+                android:id="@+id/text_dimming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Dimming:"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/text_dimming_value"
+                app:layout_constraintTop_toBottomOf="@id/text_color" />
+
+            <TextView
+                android:id="@+id/text_dimming_value"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/text_dimming"
+                app:layout_constraintLeft_toRightOf="@id/text_dimming"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_dimming" />
+
+            <TextView
+                android:id="@+id/text_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="%"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/text_dimming_value"
+                app:layout_constraintLeft_toRightOf="@id/text_dimming_value"
+                app:layout_constraintTop_toTopOf="@id/text_dimming_value" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/container_color_picker"
+            android:layout_width="30dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:weightSum="24"
+            app:layout_constraintBottom_toTopOf="@id/container_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_info">
+
+            <View
+                android:id="@+id/colorPickerRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorRed" />
+
+            <View
+                android:id="@+id/colorPickerVermilion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorVermilion" />
+
+            <View
+                android:id="@+id/colorPickerOrange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorOrange" />
+
+            <View
+                android:id="@+id/colorPickerAmber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorAmber" />
+
+            <View
+                android:id="@+id/colorPickerYellow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorYellow" />
+
+            <View
+                android:id="@+id/colorPickerLimeGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorLimeGreen" />
+
+            <View
+                android:id="@+id/colorPickerChartreuseGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorChartreuseGreen" />
+
+            <View
+                android:id="@+id/colorPickerGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorGreen" />
+
+            <View
+                android:id="@+id/colorPickerTurquoise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorTurquoise" />
+
+            <View
+                android:id="@+id/colorPickerCyan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorCyan" />
+
+            <View
+                android:id="@+id/colorPickerCerulean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorCerulean" />
+
+            <View
+                android:id="@+id/colorPickerAzure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorAzure" />
+
+            <View
+                android:id="@+id/colorPickerSapphireBlue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorSapphireBlue" />
+
+            <View
+                android:id="@+id/colorPickerBlue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorBlue" />
+
+            <View
+                android:id="@+id/colorPickerIndigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorIndigo" />
+
+            <View
+                android:id="@+id/colorPickerViolet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorViolet" />
+
+            <View
+                android:id="@+id/colorPickerMulberry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorMulberry" />
+
+            <View
+                android:id="@+id/colorPickerMagenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorMagenta" />
+
+            <View
+                android:id="@+id/colorPickerFuchsia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorFuchsia" />
+
+            <View
+                android:id="@+id/colorPickerRose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorRose" />
+
+            <View
+                android:id="@+id/colorPickerCrimson"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorCrimson" />
+
+            <View
+                android:id="@+id/colorPicker3000K"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color3000K" />
+
+            <View
+                android:id="@+id/colorPicker4500K"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color4500K" />
+
+            <View
+                android:id="@+id/colorPicker6000K"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/color6000K" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/background_ch_button"
+            android:text="ON"
+            app:layout_constraintBottom_toTopOf="@id/button_off"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_info"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/button_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_ch_button"
+            android:text="OFF"
+            app:layout_constraintBottom_toTopOf="@id/container_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_on" />
+
+        <com.hun.dimming.view.VerticalSeekBar
+            android:id="@+id/seekBar_dimming"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginBottom="20dp"
+            android:max="255"
+            android:min="0"
+            android:progress="1"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintBottom_toTopOf="@id/container_button"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_info" />
+
+        <LinearLayout
+            android:id="@+id/container_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
+            android:weightSum="10"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/button_ch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="2"
+                android:background="@drawable/background_ch_button"
+                android:text="CH 1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/button_ch2" />
+
+            <Button
+                android:id="@+id/button_ch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="2"
+                android:background="@drawable/background_ch_button"
+                android:text="CH 2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/button_ch1"
+                app:layout_constraintRight_toLeftOf="@id/button_ch3" />
+
+            <Button
+                android:id="@+id/button_ch3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="2"
+                android:background="@drawable/background_ch_button"
+                android:text="CH 3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/button_ch2"
+                app:layout_constraintRight_toLeftOf="@id/button_ch4" />
+
+            <Button
+                android:id="@+id/button_ch4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="2"
+                android:background="@drawable/background_ch_button"
+                android:text="CH 4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/button_ch3"
+                app:layout_constraintRight_toLeftOf="@id/button_ch5" />
+
+            <Button
+                android:id="@+id/button_ch5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/background_ch_button"
+                android:text="CH 5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/button_ch4"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

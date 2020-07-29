@@ -3,4 +3,32 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorMainBackground">#87CEFA</color>
+    <color name="colorTabDefault">#C0C0C0</color>
+    <color name="colorStrokeCHButton">#4B89DC</color>
+    
+    <color name="colorRed">#FF0000</color>
+    <color name="colorVermilion">#E34234</color>
+    <color name="colorOrange">#FFA500</color>
+    <color name="colorAmber">#FFBF00</color>
+    <color name="colorYellow">#FFFF00</color>
+    <color name="colorLimeGreen">#32CD32</color>
+    <color name="colorChartreuseGreen">#7FFF00</color>
+    <color name="colorGreen">#00FF00</color>
+    <color name="colorTurquoise">#40E0D0</color>
+    <color name="colorCyan">#00FFFF</color>
+    <color name="colorCerulean">#007BA7</color>
+    <color name="colorAzure">#007FFF</color>
+    <color name="colorSapphireBlue">#0067A5</color>
+    <color name="colorBlue">#0000FF</color>
+    <color name="colorIndigo">#4B0082</color>
+    <color name="colorViolet">#7F00FF</color>
+    <color name="colorMulberry">#C54B8C</color>
+    <color name="colorMagenta">#FF00FF</color>
+    <color name="colorFuchsia">#CA2C92</color>
+    <color name="colorRose">#FF007F</color>
+    <color name="colorCrimson">#DC143C</color>
+    <color name="color3000K">#FFB46B</color>
+    <color name="color4500K">#FFDBBA</color>
+    <color name="color6000K">#FFF3EF</color>
 </resources>

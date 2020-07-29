@@ -9,6 +9,9 @@ class Constant {
         const val REQUEST_ENABLE_BLUETOOTH = 1000
         const val REQUEST_PERMISSIONS = 2000
 
+        // View pager
+        const val PAGE_MAX_COUNT = 5
+
         // IO
         const val MESSAGE_READ: Int = 0
         const val MESSAGE_WRITE: Int = 1
