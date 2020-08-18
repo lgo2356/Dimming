@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import java.lang.StringBuilder
 import java.util.*
 
@@ -49,7 +50,6 @@ class BluetoothLeService : Service() {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 val services: List<BluetoothGattService>? = gatt?.services
                 val characteristic = gatt?.getService(serviceUuid)?.getCharacteristic(characteristicUuid)
-
                 gatt?.setCharacteristicNotification(characteristic, true)
 
                 BTGatt.gatt = gatt

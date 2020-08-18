@@ -240,7 +240,8 @@ class FragmentGroup1 : Fragment() {
 
             if (BTGatt.gatt != null) {
                 BTGatt.characteristic?.value = packet
-                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+//                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 BTGatt.gatt?.writeCharacteristic(BTGatt.characteristic)
             } else {
                 Toast.makeText(context, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()

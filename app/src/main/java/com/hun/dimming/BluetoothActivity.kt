@@ -99,6 +99,7 @@ class BluetoothActivity : AppCompatActivity() {
                     val devices = btPairedAdapter.getItems()
                     val address = devices[position].address
 //                    val device = mBluetoothAdapter?.getRemoteDevice(address)
+                    btPairedAdapter.setProgress(true)
                     mBluetoothLeService?.connect(address)
 
 //                    mBluetoothGatt = device?.connectGatt(applicationContext, false, gattCallback)
@@ -113,6 +114,7 @@ class BluetoothActivity : AppCompatActivity() {
                     val devices = btDiscoveredAdapter.getItems()
                     val address = devices[position].address
 //                    val device = mBluetoothAdapter?.getRemoteDevice(address)
+                    btPairedAdapter.setProgress(true)
                     mBluetoothLeService?.connect(address)
 
 //                    mBluetoothGatt = device?.connectGatt(applicationContext, false, gattCallback)
@@ -152,16 +154,22 @@ class BluetoothActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private val mGattUpdateCReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val mGattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             when (intent?.action) {
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
                     mConnected = true
+                    btPairedAdapter.setProgress(false)
+                    btDiscoveredAdapter.setProgress(false)
+                    Toast.makeText(context, "블루투스 연결에 성공했습니다", Toast.LENGTH_SHORT).show()
                 }
 
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     mConnected = false
+                    btPairedAdapter.setProgress(false)
+                    btDiscoveredAdapter.setProgress(false)
+                    Toast.makeText(context, "디바이스와 연결이 끊어졌습니다", Toast.LENGTH_SHORT).show()
                 }
 
                 BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED -> {
@@ -281,12 +289,15 @@ class BluetoothActivity : AppCompatActivity() {
             handler.postDelayed({
                 mScanning = false
                 bluetoothLeScanner?.stopScan(leScanCallback)
+                setProgress(false)
             }, 20000)
             mScanning = true
             bluetoothLeScanner?.startScan(leScanCallback)
+            setProgress(true)
         } else {
             mScanning = false
             bluetoothLeScanner?.stopScan(leScanCallback)
+            setProgress(false)
         }
     }
 
@@ -393,13 +404,13 @@ class BluetoothActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(mGattUpdateCReceiver, makeGattUpdateIntentFilter())
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
         scanLeDevice(true)
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(mGattUpdateCReceiver)
+        unregisterReceiver(mGattUpdateReceiver)
     }
 
     override fun onStop() {

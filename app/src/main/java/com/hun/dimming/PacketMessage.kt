@@ -28,6 +28,18 @@ class PacketMessage {
         // on/off
         val onOffPacket: Byte = if (onOff) 0x31 else 0x30
 
+        val bytes: ByteArray = byteArrayOf(
+            STX,                                        // STX (1byte)
+            ZERO, ZERO, groupNumPacket,                 // Group (3bytes)
+            ZERO, ZERO, 0x31,                           // Node (Don't care) (3bytes)
+            ZERO, colorCode10, colorCode1,              // Color code (3bytes)
+            dimValue100, dimValue10, dimValue1,         // Dim value (3bytes)
+            onOffPacket,                                // on/off (1byte)
+            ETX                                         // ETX (1byte)
+        )
+
+        Log.d("Debug", bytes.size.toString())
+
         return byteArrayOf(
             STX,                                        // STX (1byte)
             ZERO, ZERO, groupNumPacket,                 // Group (3bytes)
