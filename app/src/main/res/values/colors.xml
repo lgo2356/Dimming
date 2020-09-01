@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#AB47BC</color>
+    <color name="colorPrimaryDark">#790E8B</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="colorMainBackground">#87CEFA</color>
+    <color name="colorMainBackground">#E8EAF6</color>
     <color name="colorTabDefault">#C0C0C0</color>
     <color name="colorStrokeCHButton">#4B89DC</color>
     
@@ -31,4 +31,5 @@
     <color name="color3000K">#FFB46B</color>
     <color name="color4500K">#FFDBBA</color>
     <color name="color6000K">#FFF3EF</color>
+    <color name="colorBlack">#000000</color>
 </resources>

@@ -44,6 +44,7 @@ public class MultiColorPicker extends View {
 
     private Paint colorViewPaint;
     private Paint centerColorViewPaint;
+    private Paint offButtonPaint;
 
     private Paint colorPointerPaint;
     private RectF colorPointerCoords;
@@ -55,6 +56,7 @@ public class MultiColorPicker extends View {
     private RectF innerWheelRect;
     private RectF centerOuterWheelRect;
     private RectF centerInnerWheelRect;
+    private RectF offButtonRect;
 
     private Path colorViewPath;
     private Path centerColorViewPath;
@@ -121,9 +123,12 @@ public class MultiColorPicker extends View {
         valueSliderPaint.setDither(true);
 
         colorViewPaint = new Paint();
-        centerColorViewPaint = new Paint();
-        centerColorViewPaint = new Paint();
         colorViewPaint.setAntiAlias(true);
+
+        centerColorViewPaint = new Paint();
+
+        offButtonPaint = new Paint();
+        offButtonPaint.setAntiAlias(true);
 
         colorViewPath = new Path();
         centerColorViewPath = new Path();
@@ -134,6 +139,7 @@ public class MultiColorPicker extends View {
         innerWheelRect = new RectF();
         centerOuterWheelRect = new RectF();
         centerInnerWheelRect = new RectF();
+        offButtonRect = new RectF();
 
         colorPointerCoords = new RectF();
     }
@@ -199,13 +205,34 @@ public class MultiColorPicker extends View {
             centerColorViewPaint.setColor(centerColors[i]);
 
             canvas.drawPath(centerColorViewPath, centerColorViewPaint);
+
+//            float[] blackColor = new float[]{0f, 0f, 0f};
+//            centerColorViewPaint.setColor(Color.HSVToColor(blackColor));
+//            centerColorViewPaint.setTextSize(dpToPx(getContext(), 14));
+//            centerColorViewPaint.setTextAlign(Paint.Align.CENTER);
+//
+//            int xPos = getWidth() / 2;
+//            int yPos = (int) (getHeight() / 2 - (centerColorViewPaint.descent() + centerColorViewPaint.ascent() / 2));
+//
+//            canvas.drawText("OFF", xPos, yPos, centerColorViewPaint);
         }
 
         // Black button
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
+//        int centerX = getWidth() / 2;
+//        int centerY = getHeight() / 2;
 
-        canvas.drawBitmap(colorWheelBitmap, centerX - colorWheelRadius, centerY - colorWheelRadius, null);
+        canvas.drawArc(offButtonRect, 270, 360, false, offButtonPaint);
+
+        offButtonPaint.setColor(Color.parseColor("#ffffff"));
+        offButtonPaint.setTextSize(dpToPx(getContext(), 14));
+        offButtonPaint.setTextAlign(Paint.Align.CENTER);
+
+        int xPos = getWidth() / 2;
+        int yPos = (int) (getHeight() / 2 - (offButtonPaint.descent() + offButtonPaint.ascent() / 2));
+
+        canvas.drawText("OFF", xPos, yPos, offButtonPaint);
+
+//        canvas.drawBitmap(colorWheelBitmap, centerX - colorWheelRadius, centerY - colorWheelRadius, null);
 
 //        centerColorViewPath.reset();
 //        centerColorViewPath.arcTo(centerOuterWheelRect, 315, -120);
@@ -307,7 +334,6 @@ public class MultiColorPicker extends View {
         valuePointerArrowPaint.setStrokeJoin(Join.ROUND);
         valuePointerArrowPaint.setColor(Color.BLACK);
         canvas.drawPath(arrowPointerPath, valuePointerArrowPaint);
-
     }
 
     @Override
@@ -340,8 +366,9 @@ public class MultiColorPicker extends View {
         centerInnerWheelRect.set(centerX - centerInnerRadius, centerY - centerInnerRadius, centerX + centerInnerRadius, centerY + centerInnerRadius);
 
         // Black button (off)
+        offButtonRect.set(centerX - colorWheelRadius, centerY - colorWheelRadius, centerX + colorWheelRadius, centerY + colorWheelRadius);
 
-        colorWheelBitmap = createColorWheelBitmap(colorWheelRadius * 2, colorWheelRadius * 2);
+//        colorWheelBitmap = createColorWheelBitmap(colorWheelRadius * 2, colorWheelRadius * 2);
 
         gradientRotationMatrix = new Matrix();
         gradientRotationMatrix.preRotate(270, width / 2, height / 2);
@@ -527,11 +554,30 @@ public class MultiColorPicker extends View {
             }
         } else if (d <= colorWheelRadius) {
             Log.d("Debug", "Black");
+            selectedColorPick = 24;
         }
     }
 
     public int getColorPick() {
         return this.selectedColorPick;
+    }
+
+    public void clearColorCode() {
+        selectedColorPick = 0;
+    }
+
+    public void setOffButtonBgChange(boolean state) {
+        if (state) {
+            offButtonPaint.setColor(Color.parseColor("#616161"));
+        } else {
+            offButtonPaint.setColor(Color.parseColor("#000000"));
+        }
+
+        invalidate();
+    }
+
+    public int getOuterWheelRadius() {
+        return this.outerWheelRadius;
     }
 
     private float dpToPx(Context context, float dp) {
