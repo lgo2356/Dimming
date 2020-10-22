@@ -26,6 +26,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import static java.lang.Math.*;
+
 public class MultiColorPicker extends View {
 
     /**
@@ -148,7 +150,7 @@ public class MultiColorPicker extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int size = Math.min(widthSize, heightSize);
+        int size = min(widthSize, heightSize);
         setMeasuredDimension(size, size);
     }
 
@@ -156,9 +158,33 @@ public class MultiColorPicker extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         int[] colors = new int[21];
-        float[] hues = new float[]{0f, 5f, 39f, 45f, 60f, 120f, 90f, 120f, 174f, 180f, 196f, 210f, 203f, 240f, 275f, 270f, 328f, 300f, 321f, 330f, 348f};
-        float[] saturations = new float[]{1f, 0.77f, 1f, 1f, 1f, 0.756f, 1f, 1f, 0.714f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0.619f, 1f, 0.782f, 1f, 0.908f};
-        float[] values = new float[]{1f, 0.89f, 1f, 1f, 1f, 0.804f, 1f, 1f, 0.878f, 1f, 0.655f, 1f, 0.647f, 1f, 0.51f, 1f, 0.773f, 1f, 0.792f, 1f, 0.855f};
+        float[] hues = new float[]{
+                0f, 15f, 30f,
+                45f, 60f, 75f,
+                90f, 120f, 165f,
+                180f, 195f, 210f,
+                225f, 240f, 255f,
+                270f, 285f, 300f,
+                315f, 330f, 345f
+        };
+        float[] saturations = new float[]{
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        };
+        float[] values = new float[]{
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        };
 
         for (int i = 0; i < colors.length; i++) {
             float[] hsv = new float[3];
@@ -205,16 +231,6 @@ public class MultiColorPicker extends View {
             centerColorViewPaint.setColor(centerColors[i]);
 
             canvas.drawPath(centerColorViewPath, centerColorViewPaint);
-
-//            float[] blackColor = new float[]{0f, 0f, 0f};
-//            centerColorViewPaint.setColor(Color.HSVToColor(blackColor));
-//            centerColorViewPaint.setTextSize(dpToPx(getContext(), 14));
-//            centerColorViewPaint.setTextAlign(Paint.Align.CENTER);
-//
-//            int xPos = getWidth() / 2;
-//            int yPos = (int) (getHeight() / 2 - (centerColorViewPaint.descent() + centerColorViewPaint.ascent() / 2));
-//
-//            canvas.drawText("OFF", xPos, yPos, centerColorViewPaint);
         }
 
         // Black button
@@ -231,71 +247,14 @@ public class MultiColorPicker extends View {
         int yPos = (int) (getHeight() / 2 - (offButtonPaint.descent() + offButtonPaint.ascent() / 2));
 
         canvas.drawText("OFF", xPos, yPos, offButtonPaint);
-
-//        canvas.drawBitmap(colorWheelBitmap, centerX - colorWheelRadius, centerY - colorWheelRadius, null);
-
-//        centerColorViewPath.reset();
-//        centerColorViewPath.arcTo(centerOuterWheelRect, 315, -120);
-//        centerColorViewPath.arcTo(centerInnerWheelRect, 195, 120);
-//        float[] colorHSV = new float[]{240f, 1f, 1f};
-////        testPaint.setColor(Color.HSVToColor(colorHSV));
-//        centerColorViewPaint.setColor(-65536);
-//        canvas.drawPath(centerColorViewPath, centerColorViewPaint);
-//
-//        centerColorViewPath.reset();
-//        centerColorViewPath.arcTo(centerOuterWheelRect, 195, -120);
-//        centerColorViewPath.arcTo(centerInnerWheelRect, 75, 120);
-//        colorHSV = new float[]{0f, 1f, 1f};
-////        testPaint.setColor(Color.HSVToColor(colorHSV));
-//        centerColorViewPaint.setColor(-1883340);
-//        canvas.drawPath(centerColorViewPath, centerColorViewPaint);
-//
-//        centerColorViewPath.reset();
-//        centerColorViewPath.arcTo(centerOuterWheelRect, 75, -120);
-//        centerColorViewPath.arcTo(centerInnerWheelRect, 315, 120);
-//        colorHSV = new float[]{120f, 1f, 1f};
-////        testPaint.setColor(Color.HSVToColor(colorHSV));
-//        centerColorViewPaint.setColor(-23040);
-//        canvas.drawPath(centerColorViewPath, centerColorViewPaint);
-
-        // drawing value slider
-
-//        float[] hsv = new float[]{colorHSV[0], colorHSV[1], 1f};
-//
-//        SweepGradient sweepGradient = new SweepGradient(centerX, centerY, new int[]{Color.BLACK, Color.HSVToColor(hsv), Color.WHITE}, null);
-//        sweepGradient.setLocalMatrix(gradientRotationMatrix);
-//        valueSliderPaint.setShader(sweepGradient);
-
-//        canvas.drawPath(valueSliderPath, valueSliderPaint);
-
-        // drawing color wheel pointer
-
-//        for (int i = 0; i < paramColorCount; i++) {
-//            drawColorWheelPointer(canvas, (float) Math.toRadians(adjacentHue[i]));
-//        }
-
-        // drawing value pointer
-//        valuePointerPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 1f - colorHSV[2]}));
-//
-//        double valueAngle = (colorHSV[2] - 0.5f) * Math.PI;
-//        float valueAngleX = (float) Math.cos(valueAngle);
-//        float valueAngleY = (float) Math.sin(valueAngle);
-
-//        canvas.drawLine(valueAngleX * innerWheelRadius + centerX, valueAngleY * innerWheelRadius + centerY, valueAngleX * outerWheelRadius + centerX,
-//                valueAngleY * outerWheelRadius + centerY, valuePointerPaint);
-
-        // drawing pointer arrow
-//        if (arrowPointerSize > 0) {
-//            drawPointerArrow(canvas);
-//        }
     }
 
     private void drawColorWheelPointer(Canvas canvas, float hueAngle) {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
 
-        int colorPointX = (int) (-Math.cos(hueAngle) * colorHSV[1] * colorWheelRadius) + centerX;
-        int colorPointY = (int) (-Math.sin(hueAngle) * colorHSV[1] * colorWheelRadius) + centerY;
+        int colorPointX = (int) (-cos(hueAngle) * colorHSV[1] * colorWheelRadius) + centerX;
+        int colorPointY = (int) (-sin(hueAngle) * colorHSV[1] * colorWheelRadius) + centerY;
 
         float pointerRadius = 0.075f * colorWheelRadius;
         int pointerX = (int) (colorPointX - pointerRadius / 2);
@@ -309,12 +268,12 @@ public class MultiColorPicker extends View {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
 
-        double tipAngle = (colorHSV[2] - 0.5f) * Math.PI;
-        double leftAngle = tipAngle + Math.PI / 96;
-        double rightAngle = tipAngle - Math.PI / 96;
+        double tipAngle = (colorHSV[2] - 0.5f) * PI;
+        double leftAngle = tipAngle + PI / 96;
+        double rightAngle = tipAngle - PI / 96;
 
-        double tipAngleX = Math.cos(tipAngle) * outerWheelRadius;
-        double tipAngleY = Math.sin(tipAngle) * outerWheelRadius;
+        double tipAngleX = cos(tipAngle) * outerWheelRadius;
+        double tipAngleY = sin(tipAngle) * outerWheelRadius;
 //        double leftAngleX = Math.cos(leftAngle) * (outerWheelRadius + arrowPointerSize);
 //        double leftAngleY = Math.sin(leftAngle) * (outerWheelRadius + arrowPointerSize);
 //        double rightAngleX = Math.cos(rightAngle) * (outerWheelRadius + arrowPointerSize);
@@ -432,19 +391,19 @@ public class MultiColorPicker extends View {
                 int y = (int) event.getY();
                 int cx = x - getWidth() / 2;
                 int cy = y - getHeight() / 2;
-                double d = Math.sqrt(cx * cx + cy * cy);
+                double d = sqrt(cx * cx + cy * cy);
 
                 if (d <= colorWheelRadius) {
-                    colorHSV[0] = (float) (Math.toDegrees(Math.atan2(cy, cx)) + 180f);
-                    colorHSV[1] = Math.max(0f, Math.min(1f, (float) (d / colorWheelRadius)));
+                    colorHSV[0] = (float) (toDegrees(atan2(cy, cx)) + 180f);
+                    colorHSV[1] = max(0f, min(1f, (float) (d / colorWheelRadius)));
 
                     Log.d("Debug", Float.toString(colorHSV[0]));
                     updateAdjacentHue();
                     invalidate();
 
                 } else if (d <= outerWheelRadius && d >= innerWheelRadius) {
-                    colorHSV[0] = (float) (Math.toDegrees(Math.atan2(cy, cx)));
-                    colorHSV[2] = (float) Math.max(0, Math.min(1, Math.atan2(cy, cx) / Math.PI + 0.5f));
+                    colorHSV[0] = (float) (toDegrees(atan2(cy, cx)));
+                    colorHSV[2] = (float) max(0, min(1, atan2(cy, cx) / PI + 0.5f));
 
                     if (colorHSV[0] < 0) {
                         colorHSV[0] += 360;
@@ -465,11 +424,11 @@ public class MultiColorPicker extends View {
     public void setColorPick(int x, int y) {
         int cx = x - getWidth() / 2;
         int cy = y - getHeight() / 2;
-        double d = Math.sqrt(cx * cx + cy * cy);
+        double d = sqrt(cx * cx + cy * cy);
 
         if (d <= outerWheelRadius && d >= innerWheelRadius) {
-            colorHSV[0] = (float) (Math.toDegrees(Math.atan2(cy, cx)));
-            colorHSV[2] = (float) Math.max(0, Math.min(1, Math.atan2(cy, cx) / Math.PI + 0.5f));
+            colorHSV[0] = (float) (toDegrees(atan2(cy, cx)));
+            colorHSV[2] = (float) max(0, min(1, atan2(cy, cx) / PI + 0.5f));
 
             if (colorHSV[0] <= -90 && colorHSV[0] >= -180) {
                 colorHSV[0] += 360;
@@ -540,7 +499,7 @@ public class MultiColorPicker extends View {
                 selectedColorPick = 20;
             }
         } else if (d <= centerOuterRadius && d >= centerInnerRadius) {
-            colorHSV[0] = (float) (Math.toDegrees(Math.atan2(cy, cx)));
+            colorHSV[0] = (float) (toDegrees(atan2(cy, cx)));
 
             if (colorHSV[0] <= centerColorPickRanges[0][0] && colorHSV[0] >= centerColorPickRanges[0][1]) {
                 Log.d("Debug", "3000K");
