@@ -8,28 +8,35 @@
     <color name="colorStrokeCHButton">#4B89DC</color>
     
     <color name="colorRed">#FF0000</color>
-    <color name="colorVermilion">#E34234</color>
-    <color name="colorOrange">#FFA500</color>
+    <color name="colorVermilion">#FF3F00</color>
+    <color name="colorOrange">#FF7F00</color>
+
     <color name="colorAmber">#FFBF00</color>
     <color name="colorYellow">#FFFF00</color>
-    <color name="colorLimeGreen">#32CD32</color>
+    <color name="colorLimeGreen">#BFFF00</color>
+
     <color name="colorChartreuseGreen">#7FFF00</color>
     <color name="colorGreen">#00FF00</color>
-    <color name="colorTurquoise">#40E0D0</color>
+    <color name="colorTurquoise">#00FFBF</color>
+
     <color name="colorCyan">#00FFFF</color>
-    <color name="colorCerulean">#007BA7</color>
+    <color name="colorCerulean">#00BFFF</color>
     <color name="colorAzure">#007FFF</color>
-    <color name="colorSapphireBlue">#0067A5</color>
+
+    <color name="colorSapphireBlue">#003FFF</color>
     <color name="colorBlue">#0000FF</color>
-    <color name="colorIndigo">#4B0082</color>
+    <color name="colorIndigo">#3F00FF</color>
+
     <color name="colorViolet">#7F00FF</color>
-    <color name="colorMulberry">#C54B8C</color>
+    <color name="colorMulberry">#BF00FF</color>
     <color name="colorMagenta">#FF00FF</color>
-    <color name="colorFuchsia">#CA2C92</color>
+
+    <color name="colorFuchsia">#FF00BF</color>
     <color name="colorRose">#FF007F</color>
-    <color name="colorCrimson">#DC143C</color>
-    <color name="color3000K">#FFB46B</color>
-    <color name="color4500K">#FFDBBA</color>
-    <color name="color6000K">#FFF3EF</color>
+    <color name="colorCrimson">#FF003F</color>
+
+    <color name="color3000K">#FFFAD2</color>
+    <color name="color4500K">#FFFFFF</color>
+    <color name="color6000K">#F0FAFF</color>
     <color name="colorBlack">#000000</color>
 </resources>
