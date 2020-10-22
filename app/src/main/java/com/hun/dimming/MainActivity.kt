@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.hun.dimming.view.MultiColorPicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.roundToInt
@@ -63,13 +64,31 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         // clicked off button
-                        if (selectedColorCode == 24) {
-                            colorPicker.setOffButtonBgChange(false)
+//                        if (selectedColorCode == 24) {
+//                            colorPicker.setOffButtonBgChange(false)
+//
+//                            if (selectedColorCode < 0 || selectedColorCode > 24) {
+//                                Toast.makeText(applicationContext, "컬러를 선택하지 않았습니다", Toast.LENGTH_SHORT).show()
+//                            }
+//
+//                            val packet = packetMessage.makePacketMessage(
+//                                1,
+//                                selectedColorCode,
+//                                seekBar_dimming.progress,
+//                                false
+//                            )
+//
+//                            if (BTGatt.gatt != null) {
+//                                BTGatt.characteristic?.value = packet
+//                                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+//                                BTGatt.gatt?.writeCharacteristic(BTGatt.characteristic)
+//                            } else {
+//                                Toast.makeText(applicationContext, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
 
-                            if (selectedColorCode < 0 || selectedColorCode > 24) {
-                                Toast.makeText(applicationContext, "컬러를 선택하지 않았습니다", Toast.LENGTH_SHORT).show()
-                            }
-
+                        // 색 선택 단계에서도 패킷을 전송하게 변경
+                        if (selectedColorCode >= 0 || selectedColorCode <= 24) {
                             val packet = packetMessage.makePacketMessage(
                                 1,
                                 selectedColorCode,
@@ -79,10 +98,12 @@ class MainActivity : AppCompatActivity() {
 
                             if (BTGatt.gatt != null) {
                                 BTGatt.characteristic?.value = packet
-                                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+                                BTGatt.characteristic?.writeType =
+                                    BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
                                 BTGatt.gatt?.writeCharacteristic(BTGatt.characteristic)
                             } else {
-                                Toast.makeText(applicationContext, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()
+                                showSnackBar("블루투스 연결해주세요.")
+//                                Toast.makeText(applicationContext, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -120,14 +141,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(applicationContext, "패킷 전송 성공", Toast.LENGTH_SHORT).show()
             }
-
-//            if (BTGatt.gatt != null) {
-//                BTGatt.characteristic?.value = packet
-//                BTGatt.characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-//                BTGatt.gatt?.writeCharacteristic(BTGatt.characteristic)
-//            } else {
-//                Toast.makeText(applicationContext, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()
-//            }
         }
     }
 
@@ -376,6 +389,11 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "블루투스 연결해주세요.", Toast.LENGTH_SHORT).show()
             false
         }
+    }
+
+    private fun showSnackBar(text: String) {
+        val snackBar = Snackbar.make(main_container, text, Snackbar.LENGTH_SHORT)
+        snackBar.setAction("확인") { snackBar.dismiss() }.show()
     }
 
     private fun createTabView(name: String): View {
